@@ -25,9 +25,10 @@ MarkupEnd ::= '/' Name
 <?TOKENS?>
 
 /* Plain */
-Plain ::= PlainStart (AnyChar* PlainEnd)?  /* ws: explicit */
-PlainStart ::= AnyChar - ('[' | '{' | '$' | WhiteSpace)
-PlainEnd ::= AnyChar - WhiteSpace
+Plain ::= PlainStart (PlainChar* PlainEnd)?  /* ws: explicit */
+PlainChar ::= AnyChar - ('{' | '}')
+PlainStart ::= PlainChar - ('[' | '$' | WhiteSpace)
+PlainEnd ::= PlainChar - WhiteSpace
 
 /* Text */
 Text ::= (TextChar | TextEscape)+

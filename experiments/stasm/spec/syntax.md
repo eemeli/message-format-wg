@@ -295,16 +295,19 @@ Message ::= Plain | Pattern | Preamble Variant+
 
 ### Plain
 
-A plain message only contains translatable content.
-Plain messages must not start with one of the syntax characters `[`, `{` or `$`.
+A plain message only contains translatable content;
+placeholders or their delimiters are not allowed inside a plain message.
+Plain messages must not start with one of the syntax characters `[`, `{` or `$`,
+as those would indicate that the message has a more complex structure.
 Any whitespace at the beginning or end of a plain message is ignored.
 A plain message cannot represent an empty string;
 for that, use an empty pattern `[]` instead.
 
 ```ebnf
-Plain ::= PlainStart (AnyChar* PlainEnd)?  /* ws: explicit */
-PlainStart ::= AnyChar - ('[' | '{' | '$' | WhiteSpace)
-PlainEnd ::= AnyChar - WhiteSpace
+Plain ::= PlainStart (PlainChar* PlainEnd)?  /* ws: explicit */
+PlainChar ::= AnyChar - ('{' | '}')
+PlainStart ::= PlainChar - ('[' | '$' | WhiteSpace)
+PlainEnd ::= PlainChar - WhiteSpace
 ```
 
 ### Preamble
@@ -563,9 +566,10 @@ Ignore ::= WhiteSpace /* ws: definition */
 <?TOKENS?>
 
 /* Plain */
-Plain ::= PlainStart (AnyChar* PlainEnd)?  /* ws: explicit */
-PlainStart ::= AnyChar - ('[' | '{' | '$' | WhiteSpace)
-PlainEnd ::= AnyChar - WhiteSpace
+Plain ::= PlainStart (PlainChar* PlainEnd)?  /* ws: explicit */
+PlainChar ::= AnyChar - ('{' | '}')
+PlainStart ::= PlainChar - ('[' | '$' | WhiteSpace)
+PlainEnd ::= PlainChar - WhiteSpace
 
 /* Text */
 Text ::= (TextChar | TextEscape)+
