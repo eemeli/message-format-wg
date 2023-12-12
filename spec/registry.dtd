@@ -3,9 +3,10 @@
     xml:lang       NMTOKEN  #IMPLIED
 >
 
-<!ELEMENT function (description+,(formatSignature|matchSignature|alias)+)>
+<!ELEMENT function (description+,input?,(option|match|override|alias)*)>
 <!ATTLIST function
-    name           NMTOKEN  #REQUIRED
+    name           ID                  #REQUIRED
+    supports       (format|match|all)  #REQUIRED
 >
 
 <!ELEMENT description (#PCDATA)>
@@ -18,13 +19,6 @@
     id             ID     #REQUIRED
     regex          CDATA  #REQUIRED
 >
-
-<!ELEMENT formatSignature (input?,option*,override*)>
-<!ATTLIST formatSignature
-    position       (open|close|standalone)  "standalone"
->
-
-<!ELEMENT matchSignature (input?,option*,match*,override*)>
 
 <!ELEMENT input (description*)>
 <!ATTLIST input
@@ -41,6 +35,8 @@
     validationRule IDREF         #IMPLIED
     required       (true|false)  "false"
     readonly       (true|false)  "false"
+    supports       (format|match|all)  "all"
+    excludes       NMTOKENS            #IMPLIED
 >
 
 <!ELEMENT match EMPTY>
@@ -57,7 +53,7 @@
 
 <!ELEMENT alias (description,setOption*,override*)>
 <!ATTLIST alias
-    name           NMTOKEN  #REQUIRED
+    name           ID                  #REQUIRED
     supports       (format|match|all)  "all"
 >
 

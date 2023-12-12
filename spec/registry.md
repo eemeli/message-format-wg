@@ -90,46 +90,35 @@ For the sake of brevity, only `locales="en"` is considered.
 <!DOCTYPE registry SYSTEM "./registry.dtd">
 
 <registry xml:lang="en">
-    <function name="platform">
+    <function name="platform" supports="match">
         <description>Match the current OS.</description>
-        <matchSignature>
-            <match values="windows linux macos android ios"/>
-        </matchSignature>
+        <match values="windows linux macos android ios"/>
     </function>
 
     <validationRule id="anyNumber" regex="-?[0-9]+(\.[0-9]+)"/>
     <validationRule id="positiveInteger" regex="[0-9]+"/>
     <validationRule id="currencyCode" regex="[A-Z]{3}"/>
 
-    <function name="number">
+    <function name="number" supports="all">
         <description>
             Format a number.
             Match a **formatted** numerical value against CLDR plural categories or against a number literal.
         </description>
 
-        <matchSignature>
-            <input validationRule="anyNumber"/>
-            <option name="type" values="cardinal ordinal"/>
-            <option name="minimumIntegerDigits" validationRule="positiveInteger"/>
-            <option name="minimumFractionDigits" validationRule="positiveInteger"/>
-            <option name="maximumFractionDigits" validationRule="positiveInteger"/>
-            <option name="minimumSignificantDigits" validationRule="positiveInteger"/>
-            <option name="maximumSignificantDigits" validationRule="positiveInteger"/>
-            <!-- Since this applies to both cardinal and ordinal, all plural options are valid. -->
-            <match locales="en" values="one two few other" validationRule="anyNumber"/>
-            <match values="zero one two few many other" validationRule="anyNumber"/>
-        </matchSignature>
+        <input validationRule="anyNumber"/>
 
-        <formatSignature>
-            <input validationRule="anyNumber"/>
-            <option name="minimumIntegerDigits" validationRule="positiveInteger"/>
-            <option name="minimumFractionDigits" validationRule="positiveInteger"/>
-            <option name="maximumFractionDigits" validationRule="positiveInteger"/>
-            <option name="minimumSignificantDigits" validationRule="positiveInteger"/>
-            <option name="maximumSignificantDigits" validationRule="positiveInteger"/>
-            <option name="style" readonly="true" values="decimal currency percent unit" default="decimal"/>
-            <option name="currency" readonly="true" validationRule="currencyCode"/>
-        </formatSignature>
+        <option name="minimumIntegerDigits" validationRule="positiveInteger"/>
+        <option name="minimumFractionDigits" validationRule="positiveInteger"/>
+        <option name="maximumFractionDigits" validationRule="positiveInteger"/>
+        <option name="minimumSignificantDigits" validationRule="positiveInteger"/>
+        <option name="maximumSignificantDigits" validationRule="positiveInteger"/>
+        <option name="style" readonly="true" values="decimal currency percent unit" default="decimal" supports="format"/>
+        <option name="currency" readonly="true" validationRule="currencyCode" supports="format"/>
+        <option name="type" values="cardinal ordinal" supports="match"/>
+
+        <!-- Since this applies to both cardinal and ordinal, all plural options are valid. -->
+        <match locales="en" values="one two few other" validationRule="anyNumber"/>
+        <match values="zero one two few many other" validationRule="anyNumber"/>
 
         <alias name="integer">
           <description>Locale-sensitive integral number formatting</description>
@@ -171,35 +160,25 @@ A localization engineer can then extend the registry by defining the following `
 <!DOCTYPE registry SYSTEM "./registry.dtd">
 
 <registry xml:lang="en">
-    <function name="noun">
+    <function name="noun" supports="format">
         <description>Handle the grammar of a noun.</description>
-        <formatSignature>
-            <override locales="en">
-                <input/>
-                <option name="article" values="definite indefinite"/>
-                <option name="plural" values="one other"/>
-                <option name="case" values="nominative genitive" default="nominative"/>
-            </override>
-        </formatSignature>
+        <override locales="en">
+            <input/>
+            <option name="article" values="definite indefinite"/>
+            <option name="plural" values="one other"/>
+            <option name="case" values="nominative genitive" default="nominative"/>
+        </override>
     </function>
 
-    <function name="adjective">
+    <function name="adjective" supports="format">
         <description>Handle the grammar of an adjective.</description>
-        <formatSignature>
-            <override locales="en">
-                <input/>
-                <option name="article" values="definite indefinite"/>
-                <option name="plural" values="one other"/>
-                <option name="case" values="nominative genitive" default="nominative"/>
-            </override>
-        </formatSignature>
-        <formatSignature>
-            <override locales="en">
-                <input/>
-                <option name="article" values="definite indefinite"/>
-                <option name="accord"/>
-            </override>
-        </formatSignature>
+        <override locales="en">
+            <input/>
+            <option name="article" values="definite indefinite"/>
+            <option name="accord" excludes="case plural"/>
+            <option name="plural" values="one other"/>
+            <option name="case" values="nominative genitive" default="nominative"/>
+        </override>
     </function>
 </registry>
 ```
